@@ -8,6 +8,15 @@
     <v-data-table
         :headers="headers"
         :items="companies">
+      <template v-slot:item.name="{ item }">
+        <div
+            type="button"
+            class="rowCompanyName"
+            @click="goToEmployees(item)"
+        >
+          {{ item.name }}
+        </div>
+      </template>
       <template v-slot:item.employees="{ item }">
         <div v-for="(employee, index) in item.employees">
           {{ employee.name }} {{ employee.surname }}
@@ -72,6 +81,9 @@ export default {
     },
     editCompany() {
 
+    },
+    goToEmployees(company) {
+      this.$router.push('employees/' + company.id)
     }
   }
 }
@@ -83,4 +95,7 @@ export default {
   margin: 15px;
 }
 
+.rowCompanyName {
+  color: dodgerblue;
+}
 </style>

@@ -1,26 +1,30 @@
 <template>
   <v-app>
     <v-app-bar
-      app
-      color="primary"
-      dark
+        app
+        color="primary"
+        dark
     >
+      <router-link to="/" class="text-decoration-none">
+        <v-btn
+            text
+        >
+          <span class="mr-2">Company</span>
+        </v-btn>
+      </router-link>
     </v-app-bar>
 
     <v-main>
-     <router-view/>
+      <router-view/>
     </v-main>
   </v-app>
 </template>
 
 <script>
 
-import CompaniesView from "./views/CompaniesView";
 export default {
   name: 'App',
-  components: {CompaniesView},
-  data: () => ({
-  }),
+  data: () => ({}),
   mounted() {
     this.$store.dispatch('getAllCompanies').catch(error => {
       alert(error.response.data)
