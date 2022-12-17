@@ -11,7 +11,9 @@
     </template>
     <v-card>
       <v-card-title>
-        Create Company
+        <div>
+          <span>Create Company</span>
+        </div>
       </v-card-title>
       <v-text-field
           class="dialog-input"
@@ -44,6 +46,8 @@ export default {
         createCompany(this.newCompany).then(res => {
           this.$store.dispatch('getAllCompanies', res.data)
               .catch(err => alert(err.response.data))
+          this.dialog = false;
+          this.newCompany.name = ''
         })
       }
     }
