@@ -1,13 +1,24 @@
 <template>
   <v-container>
     <div>
-      <v-row class="justify-end">
+      <v-row class="justify-end margin-15">
         <create-company-window></create-company-window>
       </v-row>
     </div>
+
+    <v-text-field
+        v-model="search"
+        label="Search company"
+        single-line
+        hide-details
+    ></v-text-field>
+
     <v-data-table
         :headers="headers"
-        :items="companies">
+        :items="companies"
+        :search="search"
+        class="data-table"
+    >
       <template v-slot:item.name="{ item }">
         <div
             type="button"
@@ -30,9 +41,20 @@
         </div>
       </template>
       <template v-slot:item.actions="{ item }">
-        <v-btn @click="deleteCompany(item)" icon>
-          <v-icon>mdi-delete</v-icon>
-        </v-btn>
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+                @click="deleteCompany(item)"
+                icon
+                v-bind="attrs"
+                v-on="on"
+            >
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </template>
+          <span>Delete</span>
+        </v-tooltip>
+
         <edit-company-window :company="item"></edit-company-window>
 
       </template>
@@ -49,10 +71,10 @@ export default {
   name: "CompaniesView",
   components: {EditCompanyWindow, CreateCompanyWindow},
   data: () => ({
+    search: '',
     headers: [{
       text: 'Name',
       align: 'start',
-      sortable: false,
       value: 'name'
     },
       {
@@ -90,6 +112,11 @@ export default {
 
 .margin-15 {
   margin: 15px;
+}
+
+.data-table {
+  font-size: 2em;
+  margin-top: 5vh;
 }
 
 .rowCompanyName {

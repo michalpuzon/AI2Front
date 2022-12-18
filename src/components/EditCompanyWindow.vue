@@ -5,9 +5,19 @@
       persistent
       @save="editCompany(company.id, company)"
   >
-    <v-btn icon>
-      <v-icon>mdi-pencil-outline</v-icon>
-    </v-btn>
+    <v-tooltip top>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+            icon
+            v-bind="attrs"
+            v-on="on"
+        >
+          <v-icon>mdi-pencil-outline</v-icon>
+        </v-btn>
+      </template>
+      <span>Edit</span>
+    </v-tooltip>
+
     <template v-slot:input>
       <div class="mt-4 text-h6">
         Update Name
