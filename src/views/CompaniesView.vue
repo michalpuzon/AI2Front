@@ -33,9 +33,8 @@
         <v-btn @click="deleteCompany(item)" icon>
           <v-icon>mdi-delete</v-icon>
         </v-btn>
-        <v-btn @click="editCompany(item)" icon>
-          <v-icon>mdi-pencil-outline</v-icon>
-        </v-btn>
+        <edit-company-window :company="item"></edit-company-window>
+
       </template>
     </v-data-table>
   </v-container>
@@ -44,10 +43,11 @@
 <script>
 import CreateCompanyWindow from "../components/CreateCompanyWindow";
 import {deleteCompany} from "../api/api";
+import EditCompanyWindow from "../components/EditCompanyWindow";
 
 export default {
   name: "CompaniesView",
-  components: {CreateCompanyWindow},
+  components: {EditCompanyWindow, CreateCompanyWindow},
   data: () => ({
     headers: [{
       text: 'Name',
@@ -78,9 +78,6 @@ export default {
       deleteCompany(company.id).then(res => {
         this.$store.dispatch('getAllCompanies', res.data)
       }).catch(err => alert(err.response.data))
-    },
-    editCompany() {
-
     },
     goToEmployees(company) {
       this.$router.push('employees/' + company.id)

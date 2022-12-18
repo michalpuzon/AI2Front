@@ -30,6 +30,10 @@ export function deleteCompany(companyId) {
     return sendRequest('company/' + companyId, 'delete', {}, {})
 }
 
+export function updateCompany(companyId, newCompany) {
+    return sendRequest('company/update/' + companyId, 'put', newCompany, {})
+}
+
 // Employee
 export function getCompanyEmployees(companyId) {
     return sendRequest('employee/company/' + companyId, 'get', {}, {})
@@ -59,6 +63,10 @@ export function setEmployeePositions(setEmployeePositionsInCompany) {
     return sendRequest('employee/positions', 'patch', setEmployeePositionsInCompany, {})
 }
 
+export function updateEmployee(employeeId, newEmployee) {
+    return sendRequest('employee/update/' + employeeId, 'put', newEmployee, {})
+}
+
 // Position
 export function getCompanyPositions(companyId) {
     return sendRequest('position/company/' + companyId, 'get', {}, {})
@@ -78,4 +86,8 @@ export function deletePositionFromCompany(positionId, companyId) {
 
 export function deletePositions(deletePositions) {
     return sendRequest('position', 'delete', deletePositions, {})
+}
+
+export function updatePosition(positionId, newPosition) {
+    return sendRequest('employee/update/' + positionId, 'put', newPosition, {})
 }
