@@ -34,19 +34,7 @@
           </template>
           <span>Delete</span>
         </v-tooltip>
-        <v-tooltip top>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-                @click="editCompany(item)"
-                icon
-                v-bind="attrs"
-                v-on="on"
-            >
-              <v-icon>mdi-pencil-outline</v-icon>
-            </v-btn>
-          </template>
-          <span>Edit</span>
-        </v-tooltip>
+        <edit-employee-window :existed-employee="item"></edit-employee-window>
       </template>
     </v-data-table>
   </v-container>
@@ -55,10 +43,11 @@
 <script>
 import {deleteEmployee} from "../api/api";
 import CreateEmployeeWindow from "../components/CreateEmployeeWindow.vue";
+import EditEmployeeWindow from "../components/EditEmployeeWindow";
 
 export default {
   name: "EmployeesView",
-  components: {CreateEmployeeWindow},
+  components: {EditEmployeeWindow, CreateEmployeeWindow},
   data: () => ({
     search: '',
     companyId: null,
@@ -102,9 +91,6 @@ export default {
       deleteEmployee(employee.id).then(() => {
         this.getEmployees()
       })
-    },
-    editCompany() {
-
     },
     getEmployees() {
       this.companyId = window.location.href.substring(window.location.href.lastIndexOf('/') + 1)

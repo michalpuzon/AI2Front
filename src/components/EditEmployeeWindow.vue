@@ -11,19 +11,22 @@
         width="600"
         transition="dialog-bottom-transition"
     >
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-            class="create-button"
-            color="primary"
-            v-on="on"
-            v-bind="attrs">
-          <span>Create Employee</span>
-        </v-btn>
-      </template>
+      <v-tooltip top>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+              icon
+              v-bind="attrs"
+              v-on="on"
+          >
+            <v-icon>mdi-pencil-outline</v-icon>
+          </v-btn>
+        </template>
+        <span>Edit</span>
+      </v-tooltip>
       <v-card>
         <v-card-title class="header-dialog">
           <div>
-            <span>Create Employee</span>
+            <span>Edit Employee</span>
           </div>
           <v-spacer></v-spacer>
 
@@ -37,14 +40,14 @@
         </v-card-title>
         <v-text-field
             class="ma-2"
-            v-model="newEmployee.name"
+            v-model="existedEmployee.name"
             label="Name"
             :rules="[rules.required]"
         >
         </v-text-field>
         <v-text-field
             class="ma-2"
-            v-model="newEmployee.surname"
+            v-model="existedEmployee.surname"
             label="Surname"
             :rules="[rules.required]"
         >
@@ -52,7 +55,7 @@
         <v-text-field
             type="number"
             class="ma-2"
-            v-model="newEmployee.salary"
+            v-model="existedEmployee.salary"
             label="Salary"
             :rules="[rules.required]"
         >
@@ -60,7 +63,7 @@
         <v-text-field
             type="number"
             class="ma-2"
-            v-model="newEmployee.pesel"
+            v-model="existedEmployee.pesel"
             label="Pesel"
             :rules="[rules.required, rules.pesel]"
         >
@@ -76,7 +79,7 @@
               class="white--text ma-2"
               color="primary"
               elevation="3"
-              @click="createEmployee()"
+              @click="editEmployee()"
               :disabled="!valid"
           >
             Create
@@ -108,24 +111,17 @@
 </template>
 
 <script>
-import {createEmployee} from "../api/api";
+import {updateEmployee} from "../api/api";
 
 export default {
-  name: "CreateEmployeeWindow",
-  props: ['companyId'],
+  name: "EditEmployeeWindow",
+  props: ['existedEmployee'],
   data() {
     return {
       dialog: false,
       valid: true,
       snackbarSuccess: false,
       snackBarError: false,
-      newEmployee: {
-        name: '',
-        surname: '',
-        salary: '',
-        pesel: '',
-        companyId: this.companyId,
-      },
       rules: {
         required: v => !!v || 'The field is required',
         pesel: v => v.length === 11 || 'The pesel have 11 char'
@@ -133,32 +129,24 @@ export default {
     }
   },
   methods: {
-    createEmployee() {
-      if (this.$refs.form.validate() && this.newEmployee.pesel) {
-        createEmployee(this.newEmployee).then(() => {this.$store.dispatch('getAllCompanyEmployees', this.companyId)})
+    closeDialog() {
+      this.dialog = false;
+      this.$refs.form.resetValidation();
+      this.existedEmployee = {pesel: ''};
+    },
+    editEmployee() {
+      if (this.$refs.form.validate() && this.existedEmployee.pesel) {
+        updateEmployee(this.existedEmployee.id, this.existedEmployee).then(() => this.$store.dispatch("getAllCompanyEmployees", this.existedEmployee.companyId))
         this.closeDialog()
         this.snackbarSuccess = true;
       } else {
         this.snackBarError = true;
       }
-    },
-    closeDialog() {
-      this.dialog = false;
-      this.$refs.form.resetValidation();
-      this.newEmployee = {pesel: ''};
     }
-  },
-  computed: {
-    companies() {
-      return this.$store.getters.getCompanies
-    },
-  },
+  }
 }
 </script>
 
 <style scoped>
-.header-dialog {
-  background-color: #0275d8;
-  color: white;
-}
+
 </style>
