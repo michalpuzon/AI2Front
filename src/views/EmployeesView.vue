@@ -2,8 +2,8 @@
   <v-container>
     <div v-if="getEmployeesComputed"></div>
     <div>
-      <v-row class="justify-end">
-
+      <v-row class="justify-end margin-15">
+        <create-employee-window :companyId="companyId"/>
       </v-row>
     </div>
 
@@ -21,18 +21,32 @@
         class="data-table"
     >
       <template v-slot:item.actions="{ item }">
-        <v-btn
-            @click="deleteEmployee(item)"
-            icon
-        >
-          <v-icon>mdi-delete</v-icon>
-        </v-btn>
-        <v-btn
-            @click="editCompany(item)"
-            icon
-        >
-          <v-icon>mdi-pencil-outline</v-icon>
-        </v-btn>
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+                @click="deleteEmployee(item)"
+                icon
+                v-bind="attrs"
+                v-on="on"
+            >
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </template>
+          <span>Delete</span>
+        </v-tooltip>
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+                @click="editCompany(item)"
+                icon
+                v-bind="attrs"
+                v-on="on"
+            >
+              <v-icon>mdi-pencil-outline</v-icon>
+            </v-btn>
+          </template>
+          <span>Edit</span>
+        </v-tooltip>
       </template>
     </v-data-table>
   </v-container>
@@ -40,11 +54,14 @@
 
 <script>
 import {deleteEmployee} from "../api/api";
+import CreateEmployeeWindow from "../components/CreateEmployeeWindow.vue";
 
 export default {
   name: "EmployeesView",
+  components: {CreateEmployeeWindow},
   data: () => ({
     search: '',
+    companyId: null,
     headers: [{
       text: 'Name',
       align: 'start',
@@ -62,6 +79,10 @@ export default {
       {
         text: 'Salary',
         value: 'salary'
+      },
+      {
+        text: 'Positions',
+        value: 'positionName'
       },
       {
         text: 'Actions',
@@ -86,8 +107,8 @@ export default {
 
     },
     getEmployees() {
-      let companyId = window.location.href.substring(window.location.href.lastIndexOf('/') + 1)
-      this.$store.dispatch('getAllCompanyEmployees', companyId)
+      this.companyId = window.location.href.substring(window.location.href.lastIndexOf('/') + 1)
+      this.$store.dispatch('getAllCompanyEmployees', this.companyId)
     }
   }
 }
