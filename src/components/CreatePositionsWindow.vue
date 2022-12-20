@@ -36,11 +36,13 @@ export default {
   }),
   methods: {
     createPositions() {
-      createPosition({
-        positionName: this.position,
-        companyId: this.companyId
-      }).then(() => this.$store.dispatch('getCompanyPositions', this.companyId))
-      this.position = ''
+      if (this.position) {
+        createPosition({
+          positionName: this.position,
+          companyId: this.companyId
+        }).then(() => this.$store.dispatch('getCompanyPositions', this.companyId))
+        this.position = ''
+      }
     }
   }
 }
