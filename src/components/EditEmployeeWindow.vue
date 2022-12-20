@@ -25,28 +25,43 @@
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-card-title>
-        <v-text-field
-            class="ma-2"
-            v-model="existedEmployee.name"
-            label="Name"
-            :rules="[rules.required]"
-        >
-        </v-text-field>
-        <v-text-field
-            class="ma-2"
-            v-model="existedEmployee.surname"
-            label="Surname"
-            :rules="[rules.required]"
-        >
-        </v-text-field>
-        <v-text-field
-            type="number"
-            class="ma-2"
-            v-model="existedEmployee.salary"
-            label="Salary"
-            :rules="[rules.required]"
-        >
-        </v-text-field>
+
+        <div v-if="positions"></div>
+
+        <v-col>
+          <v-text-field
+              v-model="existedEmployee.name"
+              label="Name"
+              :rules="[rules.required]"
+          >
+          </v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field
+              v-model="existedEmployee.surname"
+              label="Surname"
+              :rules="[rules.required]"
+          >
+          </v-text-field>
+        </v-col>
+        <v-col>
+          <v-text-field
+              type="number"
+              v-model="existedEmployee.salary"
+              label="Salary"
+              :rules="[rules.required]"
+          >
+          </v-text-field>
+        </v-col>
+        <v-col>
+          <v-combobox
+              :items="allPositions"
+              label="Select position"
+              v-model="arrayPositionSelected"
+              multiple
+              item-text="positionName"
+          ></v-combobox>
+        </v-col>
         <v-footer class="justify-end">
           <v-btn
               text
@@ -61,7 +76,7 @@
               @click="editEmployee()"
               :disabled="!valid"
           >
-            Edit
+            Save
           </v-btn>
         </v-footer>
       </v-card>
@@ -90,7 +105,7 @@
 </template>
 
 <script>
-import {updateEmployee} from "../api/api";
+import {setEmployeePositions, updateEmployee} from "../api/api";
 
 export default {
   name: "EditEmployeeWindow",
@@ -102,9 +117,17 @@ export default {
       snackbarSuccess: false,
       snackBarError: false,
       companyId: window.location.href.substring(window.location.href.lastIndexOf('/') + 1),
+      allPositions: [],
+      arrayPositionSelected: [],
+      items: [],
       rules: {
         required: v => !!v || 'The field is required'
       }
+    }
+  },
+  computed: {
+    positions() {
+      this.allPositions = this.$store.getters.getPositions
     }
   },
   methods: {
@@ -116,11 +139,20 @@ export default {
       if (this.$refs.form.validate()) {
         updateEmployee(this.existedEmployee.id, this.existedEmployee).then(() =>
             this.$store.dispatch('getAllCompanyEmployees', this.companyId))
+        this.setPositionForEmployee()
         this.closeDialog()
         this.snackbarSuccess = true;
       } else {
         this.snackBarError = true;
       }
+    },
+    setPositionForEmployee() {
+      const positionsIds = this.arrayPositionSelected.map(p => p.id)
+      setEmployeePositions({
+        employeeId: this.existedEmployee.id,
+        companyId: this.companyId,
+        positionIds: positionsIds
+      })
     }
   }
 }

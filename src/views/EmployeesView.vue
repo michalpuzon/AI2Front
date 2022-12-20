@@ -1,8 +1,10 @@
 <template>
   <v-container>
     <div v-if="getEmployeesComputed"></div>
+    <div v-if="getPositions"></div>
     <div>
       <v-row class="justify-end margin-15">
+        <create-positions-window/>
         <create-employee-window/>
       </v-row>
     </div>
@@ -20,6 +22,12 @@
         :search="search"
         class="data-table"
     >
+      <template v-slot:item.positions="{ item }">
+        <div v-for="(position, index) in item.positions">
+          {{ position.positionName }}
+          <div v-if="index !== item.positions.length -1"/>
+        </div>
+      </template>
       <template v-slot:item.actions="{ item }">
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
@@ -61,10 +69,11 @@
 import {deleteEmployee, removeEmployeeFromCompany} from "../api/api";
 import CreateEmployeeWindow from "../components/CreateEmployeeWindow.vue";
 import EditEmployeeWindow from "../components/EditEmployeeWindow";
+import CreatePositionsWindow from "../components/CreatePositionsWindow.vue";
 
 export default {
   name: "EmployeesView",
-  components: {EditEmployeeWindow, CreateEmployeeWindow},
+  components: {CreatePositionsWindow, EditEmployeeWindow, CreateEmployeeWindow},
   data: () => ({
     search: '',
     companyId: null,
@@ -90,7 +99,7 @@ export default {
       },
       {
         text: 'Positions',
-        value: 'positionName'
+        value: 'positions'
       },
       {
         text: 'Actions',
@@ -103,7 +112,10 @@ export default {
     },
     getEmployeesComputed() {
       this.getEmployees()
-    }
+    },
+    getPositions() {
+      this.$store.dispatch('getCompanyPositions', this.companyId)
+    },
   },
   methods: {
     deleteEmployeeFromCompany(employee) {
