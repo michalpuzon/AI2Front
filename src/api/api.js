@@ -39,6 +39,10 @@ export function getCompanyEmployees(companyId) {
     return sendRequest('employee/company/' + companyId, 'get', {}, {})
 }
 
+export function getAllEmployees() {
+    return sendRequest('employee/all', 'get', {}, {})
+}
+
 export function getEmployeeById(employeeId) {
     return sendRequest('employee/' + employeeId, 'get', {}, {})
 }

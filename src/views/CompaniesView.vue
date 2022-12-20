@@ -13,6 +13,8 @@
         hide-details
     ></v-text-field>
 
+    <div v-if="getCompanies"></div>
+
     <v-data-table
         :headers="headers"
         :items="companies"
@@ -32,12 +34,6 @@
         <div v-for="(employee, index) in item.employees">
           {{ employee.name }} {{ employee.surname }}
           <div v-if="index !== item.employees.length -1"/>
-        </div>
-      </template>
-      <template v-slot:item.positions="{ item }">
-        <div v-for="(position, index) in item.positions">
-          {{ position.positionName }}
-          <div v-if="index !== item.positions.length -1"/>
         </div>
       </template>
       <template v-slot:item.actions="{ item }">
@@ -82,10 +78,6 @@ export default {
         value: 'employees'
       },
       {
-        text: 'Positions',
-        value: 'positions'
-      },
-      {
         text: 'Actions',
         value: 'actions'
       }]
@@ -94,6 +86,9 @@ export default {
     companies() {
       return this.$store.getters.getCompanies
     },
+    getCompanies() {
+      this.$store.dispatch('getAllCompanies')
+    }
   },
   methods: {
     deleteCompany(company) {

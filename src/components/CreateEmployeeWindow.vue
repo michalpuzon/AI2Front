@@ -3,7 +3,6 @@
       ref="form"
       v-model="valid"
       lazy-validation
-      class="fill-height"
   >
     <v-dialog
         v-model="dialog"
@@ -112,7 +111,6 @@ import {createEmployee} from "../api/api";
 
 export default {
   name: "CreateEmployeeWindow",
-  props: ['companyId'],
   data() {
     return {
       dialog: false,
@@ -124,7 +122,7 @@ export default {
         surname: '',
         salary: '',
         pesel: '',
-        companyId: this.companyId,
+        companyId: '',
       },
       rules: {
         required: v => !!v || 'The field is required',
@@ -134,8 +132,12 @@ export default {
   },
   methods: {
     createEmployee() {
+      const companyId = window.location.href.substring(window.location.href.lastIndexOf('/') + 1)
+      this.newEmployee.companyId = companyId
       if (this.$refs.form.validate() && this.newEmployee.pesel) {
-        createEmployee(this.newEmployee).then(() => {this.$store.dispatch('getAllCompanyEmployees', this.companyId)})
+        createEmployee(this.newEmployee).then(() => {
+          this.$store.dispatch('getAllCompanyEmployees', companyId)
+        })
         this.closeDialog()
         this.snackbarSuccess = true;
       } else {

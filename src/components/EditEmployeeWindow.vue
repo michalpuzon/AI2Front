@@ -3,7 +3,6 @@
       ref="form"
       v-model="valid"
       lazy-validation
-      class="fill-height"
   >
     <v-dialog
         v-model="dialog"
@@ -11,18 +10,6 @@
         width="600"
         transition="dialog-bottom-transition"
     >
-      <v-tooltip top>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-              icon
-              v-bind="attrs"
-              v-on="on"
-          >
-            <v-icon>mdi-pencil-outline</v-icon>
-          </v-btn>
-        </template>
-        <span>Edit</span>
-      </v-tooltip>
       <v-card>
         <v-card-title class="header-dialog">
           <div>
@@ -60,14 +47,6 @@
             :rules="[rules.required]"
         >
         </v-text-field>
-        <v-text-field
-            type="number"
-            class="ma-2"
-            v-model="existedEmployee.pesel"
-            label="Pesel"
-            :rules="[rules.required, rules.pesel]"
-        >
-        </v-text-field>
         <v-footer class="justify-end">
           <v-btn
               text
@@ -82,7 +61,7 @@
               @click="editEmployee()"
               :disabled="!valid"
           >
-            Create
+            Edit
           </v-btn>
         </v-footer>
       </v-card>
@@ -115,28 +94,28 @@ import {updateEmployee} from "../api/api";
 
 export default {
   name: "EditEmployeeWindow",
-  props: ['existedEmployee'],
+  props: ['existedEmployee', 'dialog'],
   data() {
     return {
-      dialog: false,
+      dialogValue: this.dialog,
       valid: true,
       snackbarSuccess: false,
       snackBarError: false,
+      companyId: window.location.href.substring(window.location.href.lastIndexOf('/') + 1),
       rules: {
-        required: v => !!v || 'The field is required',
-        pesel: v => v.length === 11 || 'The pesel have 11 char'
+        required: v => !!v || 'The field is required'
       }
     }
   },
   methods: {
     closeDialog() {
-      this.dialog = false;
-      this.$refs.form.resetValidation();
-      this.existedEmployee = {pesel: ''};
+      this.$store.dispatch('getAllCompanyEmployees', this.companyId)
+      this.$emit('update:dialog', this.dialogValue = false)
     },
     editEmployee() {
-      if (this.$refs.form.validate() && this.existedEmployee.pesel) {
-        updateEmployee(this.existedEmployee.id, this.existedEmployee).then(() => this.$store.dispatch("getAllCompanyEmployees", this.existedEmployee.companyId))
+      if (this.$refs.form.validate()) {
+        updateEmployee(this.existedEmployee.id, this.existedEmployee).then(() =>
+            this.$store.dispatch('getAllCompanyEmployees', this.companyId))
         this.closeDialog()
         this.snackbarSuccess = true;
       } else {
@@ -148,5 +127,8 @@ export default {
 </script>
 
 <style scoped>
-
+.header-dialog {
+  background-color: #0275d8;
+  color: white;
+}
 </style>

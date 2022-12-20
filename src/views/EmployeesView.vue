@@ -3,7 +3,7 @@
     <div v-if="getEmployeesComputed"></div>
     <div>
       <v-row class="justify-end margin-15">
-        <create-employee-window :companyId="companyId"/>
+        <create-employee-window/>
       </v-row>
     </div>
 
@@ -24,7 +24,7 @@
         <v-tooltip top>
           <template v-slot:activator="{ on, attrs }">
             <v-btn
-                @click="deleteEmployee(item)"
+                @click="deleteEmployeeFromCompany(item)"
                 icon
                 v-bind="attrs"
                 v-on="on"
@@ -34,14 +34,31 @@
           </template>
           <span>Delete</span>
         </v-tooltip>
-        <edit-employee-window :existed-employee="item"></edit-employee-window>
+
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+                icon
+                v-bind="attrs"
+                v-on="on"
+                @click="openDialog(item)"
+            >
+              <v-icon>mdi-pencil-outline</v-icon>
+            </v-btn>
+          </template>
+          <span>Edit</span>
+        </v-tooltip>
+
+        <edit-employee-window :dialog.sync="dialog"
+                              :existed-employee="existedEmployee"></edit-employee-window>
+
       </template>
     </v-data-table>
   </v-container>
 </template>
 
 <script>
-import {deleteEmployee} from "../api/api";
+import {deleteEmployee, removeEmployeeFromCompany} from "../api/api";
 import CreateEmployeeWindow from "../components/CreateEmployeeWindow.vue";
 import EditEmployeeWindow from "../components/EditEmployeeWindow";
 
@@ -51,6 +68,8 @@ export default {
   data: () => ({
     search: '',
     companyId: null,
+    dialog: false,
+    existedEmployee: [],
     headers: [{
       text: 'Name',
       align: 'start',
@@ -87,14 +106,21 @@ export default {
     }
   },
   methods: {
-    deleteEmployee(employee) {
-      deleteEmployee(employee.id).then(() => {
+    deleteEmployeeFromCompany(employee) {
+      removeEmployeeFromCompany({
+        employeeId: employee.id,
+        companyId: this.companyId
+      }).then(() => {
         this.getEmployees()
       })
     },
     getEmployees() {
       this.companyId = window.location.href.substring(window.location.href.lastIndexOf('/') + 1)
       this.$store.dispatch('getAllCompanyEmployees', this.companyId)
+    },
+    openDialog(item) {
+      this.existedEmployee = item
+      this.dialog = true;
     }
   }
 }

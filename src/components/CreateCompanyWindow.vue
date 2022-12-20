@@ -1,55 +1,57 @@
 <template>
-  <v-dialog
-      v-model="dialog"
-      width="400"
-      transition="dialog-bottom-transition"
-  >
-    <template v-slot:activator="{ on, attrs }">
-      <v-btn
-          class="create-button"
-          color="primary"
-          v-on="on"
-          v-bind="attrs">
-        <span>Create Company</span>
-      </v-btn>
-    </template>
-    <v-card>
-      <v-card-title class="header-dialog">
-        <div>
-          <span>Create Company</span>
-        </div>
-        <v-spacer></v-spacer>
-
+  <v-form>
+    <v-dialog
+        v-model="dialog"
+        width="400"
+        transition="dialog-bottom-transition"
+    >
+      <template v-slot:activator="{ on, attrs }">
         <v-btn
-            icon
-            color="white"
-            @click="closeDialog"
-        >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-card-title>
-      <v-text-field
-          class="ma-2"
-          v-model="newCompany.name"
-          label="Name">
-      </v-text-field>
-      <v-footer class="justify-end">
-        <v-btn
-            text
-            @click="closeDialog"
-        >
-          Cancel
-        </v-btn>
-        <v-btn
-            class="white--text ma-2"
+            class="create-button"
             color="primary"
-            elevation="3"
-            @click="addCompany"
-        >
-          Create
+            v-on="on"
+            v-bind="attrs">
+          <span>Create Company</span>
         </v-btn>
-      </v-footer>
-    </v-card>
+      </template>
+      <v-card>
+        <v-card-title class="header-dialog">
+          <div>
+            <span>Create Company</span>
+          </div>
+          <v-spacer></v-spacer>
+
+          <v-btn
+              icon
+              color="white"
+              @click="closeDialog"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
+        <v-text-field
+            class="ma-2"
+            v-model="newCompany.name"
+            label="Name">
+        </v-text-field>
+        <v-footer class="justify-end">
+          <v-btn
+              text
+              @click="closeDialog"
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+              class="white--text ma-2"
+              color="primary"
+              elevation="3"
+              @click="addCompany"
+          >
+            Create
+          </v-btn>
+        </v-footer>
+      </v-card>
+    </v-dialog>
     <v-snackbar
         v-model="snackbarSuccess"
         right
@@ -70,7 +72,7 @@
     >
       Error! Please enter the data correctly!
     </v-snackbar>
-  </v-dialog>
+  </v-form>
 </template>
 
 <script>
