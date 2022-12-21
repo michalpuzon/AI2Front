@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {getCompanies, getCompanyEmployees, getCompanyPositions} from "../api/api";
+import {getAllEmployees, getCompanies, getCompanyEmployees, getCompanyPositions} from "../api/api";
 
 Vue.use(Vuex)
 
@@ -9,6 +9,7 @@ export default new Vuex.Store({
         companies: [],
         positions: [],
         employees: [],
+        allEmployees: [],
     },
     mutations: {
         setCompanies(state, companies) {
@@ -19,6 +20,9 @@ export default new Vuex.Store({
         },
         setPositions(state, positions) {
             state.positions = positions
+        },
+        setAllEmployees(state, employees) {
+            state.allEmployees = employees
         }
     },
     actions: {
@@ -36,6 +40,11 @@ export default new Vuex.Store({
             return getCompanyPositions(companyId).then(res => {
                 context.commit('setPositions', res.data)
             })
+        },
+        getAllEmployees(context) {
+            return getAllEmployees().then(res => {
+                context.commit('setAllEmployees', res.data)
+            })
         }
     },
     getters: {
@@ -47,6 +56,9 @@ export default new Vuex.Store({
         },
         getPositions(state) {
             return state.positions
+        },
+        getAllEmployees(state) {
+            return state.allEmployees
         }
     }
 })

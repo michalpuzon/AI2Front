@@ -2,8 +2,10 @@
   <v-container>
     <div v-if="getEmployeesComputed"></div>
     <div v-if="getPositions"></div>
+    <div v-if="getAllEmployees"></div>
     <div>
       <v-row class="justify-end margin-15">
+        <hire-employee-window/>
         <create-positions-window/>
         <create-employee-window/>
       </v-row>
@@ -70,10 +72,11 @@ import {deleteEmployee, removeEmployeeFromCompany} from "../api/api";
 import CreateEmployeeWindow from "../components/CreateEmployeeWindow.vue";
 import EditEmployeeWindow from "../components/EditEmployeeWindow";
 import CreatePositionsWindow from "../components/CreatePositionsWindow.vue";
+import HireEmployeeWindow from "../components/HireEmployeeWindow";
 
 export default {
   name: "EmployeesView",
-  components: {CreatePositionsWindow, EditEmployeeWindow, CreateEmployeeWindow},
+  components: {HireEmployeeWindow, CreatePositionsWindow, EditEmployeeWindow, CreateEmployeeWindow},
   data: () => ({
     search: '',
     companyId: null,
@@ -116,6 +119,9 @@ export default {
     getPositions() {
       this.$store.dispatch('getCompanyPositions', this.companyId)
     },
+    getAllEmployees() {
+      this.$store.dispatch('getAllEmployees')
+    }
   },
   methods: {
     deleteEmployeeFromCompany(employee) {
