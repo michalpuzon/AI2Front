@@ -37,22 +37,22 @@
         </div>
       </template>
       <template v-slot:item.actions="{ item }">
-        <v-tooltip top>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-                @click="deleteCompany(item)"
-                icon
-                v-bind="attrs"
-                v-on="on"
-            >
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
-          </template>
-          <span>Delete</span>
-        </v-tooltip>
-
-        <edit-company-window :company="item"></edit-company-window>
-
+        <div class="button-container">
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                  @click="deleteCompany(item)"
+                  icon
+                  v-bind="attrs"
+                  v-on="on"
+              >
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
+            </template>
+            <span>Delete</span>
+          </v-tooltip>
+          <edit-company-window :company="item"></edit-company-window>
+        </div>
       </template>
     </v-data-table>
   </v-container>
@@ -116,5 +116,9 @@ export default {
 
 .rowCompanyName {
   color: dodgerblue;
+}
+
+.button-container {
+  display: flex;
 }
 </style>

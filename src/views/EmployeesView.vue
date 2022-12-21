@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import {deleteEmployee, removeEmployeeFromCompany} from "../api/api";
+import {deleteEmployee, removeEmployeeFromCompany, setEmployeePositions} from "../api/api";
 import CreateEmployeeWindow from "../components/CreateEmployeeWindow.vue";
 import EditEmployeeWindow from "../components/EditEmployeeWindow";
 import CreatePositionsWindow from "../components/CreatePositionsWindow.vue";
@@ -129,6 +129,11 @@ export default {
         employeeId: employee.id,
         companyId: this.companyId
       }).then(() => {
+        setEmployeePositions({
+          employeeId: employee.id,
+          companyId: this.companyId,
+          positionIds: []
+        })
         this.getEmployees()
       })
     },
