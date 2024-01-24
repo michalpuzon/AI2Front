@@ -12,6 +12,8 @@
           <span class="mr-2">Company</span>
         </v-btn>
       </router-link>
+      <v-btn @click="showLoginDialog" class="custom-btn ml-auto mr-5">Zaloguj się</v-btn>
+      <LoginDialog @login-success="closeLoginDialog" ref="loginDialog"/>
     </v-app-bar>
 
     <v-main>
@@ -22,9 +24,22 @@
 
 <script>
 
+import LoginDialog from "./components/LoginDialog";
+
 export default {
   name: 'App',
+  components: {
+    LoginDialog
+  },
   data: () => ({}),
+  methods: {
+    showLoginDialog() {
+      this.$refs.loginDialog.dialog = true;
+    },
+    closeLoginDialog() {
+      this.$refs.loginDialog.dialog = false;
+    }
+  },
   mounted() {
     this.$store.dispatch('getAllCompanies').catch(error => {
       alert(error.response.data)
@@ -32,3 +47,10 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+#app .v-btn.custom-btn {
+  color: white;
+  background-color: transparent;
+}
+</style>
