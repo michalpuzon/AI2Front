@@ -57,7 +57,9 @@ export default {
       return allEmployees.filter(function (employee) {
         let i;
         for (i = 0; i < companyEmployees.length; i++) {
+          console.log('true')
           if (companyEmployees[i].id === employee.id) {
+            console.log('false')
             return false;
           }
         }

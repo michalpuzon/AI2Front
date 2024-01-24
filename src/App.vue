@@ -8,11 +8,14 @@
       <router-link to="/" class="text-decoration-none">
         <v-btn
             text
+            @click="goToCompanies"
         >
           <span class="mr-2">Company</span>
         </v-btn>
       </router-link>
-      <v-btn @click="showLoginDialog" class="custom-btn ml-auto mr-5">Zaloguj się</v-btn>
+      <v-btn v-if="!$store.getters.getToken" @click="showLoginDialog" class="custom-btn ml-auto mr-5">Log in
+      </v-btn>
+      <v-btn v-if="$store.getters.getToken" @click="logOut" class="custom-btn ml-auto mr-5">Log out</v-btn>
       <LoginDialog @login-success="closeLoginDialog" ref="loginDialog"/>
     </v-app-bar>
 
@@ -25,6 +28,7 @@
 <script>
 
 import LoginDialog from "./components/LoginDialog";
+import router from "@/router";
 
 export default {
   name: 'App',
@@ -38,12 +42,14 @@ export default {
     },
     closeLoginDialog() {
       this.$refs.loginDialog.dialog = false;
+    },
+    logOut() {
+      this.$store.dispatch('clearToken')
+      router.push('/')
+    },
+    goToCompanies() {
+      router.push('/companies')
     }
-  },
-  mounted() {
-    this.$store.dispatch('getAllCompanies').catch(error => {
-      alert(error.response.data)
-    })
   },
 };
 </script>

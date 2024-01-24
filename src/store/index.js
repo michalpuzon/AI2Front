@@ -10,6 +10,7 @@ export default new Vuex.Store({
         positions: [],
         employees: [],
         allEmployees: [],
+        token: '',
     },
     mutations: {
         setCompanies(state, companies) {
@@ -23,6 +24,17 @@ export default new Vuex.Store({
         },
         setAllEmployees(state, employees) {
             state.allEmployees = employees
+        },
+        setToken(state, payload) {
+
+            state.token = payload.token
+        },
+        clearToken(state) {
+            state.token = ''
+            state.companies = []
+            state.positions = []
+            state.employees = []
+            state.allEmployees = []
         }
     },
     actions: {
@@ -45,6 +57,10 @@ export default new Vuex.Store({
             return getAllEmployees().then(res => {
                 context.commit('setAllEmployees', res.data)
             })
+        },
+        clearToken(context) {
+            context.commit('clearToken')
+            localStorage.removeItem('token')
         }
     },
     getters: {
@@ -59,6 +75,9 @@ export default new Vuex.Store({
         },
         getAllEmployees(state) {
             return state.allEmployees
+        },
+        getToken(state) {
+            return state.token
         }
     }
 })

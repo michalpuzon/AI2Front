@@ -3,8 +3,8 @@
     <v-card>
       <v-card-title>
         <v-tabs v-model="tab" background-color="primary" dark>
-          <v-tab :key="1" class="full-width-tab">Logowanie</v-tab>
-          <v-tab :key="2" class="full-width-tab">Rejestracja</v-tab>
+          <v-tab :key="1" class="full-width-tab">Login</v-tab>
+          <v-tab :key="2" class="full-width-tab">Registration</v-tab>
           <v-tabs-slider color="grey"></v-tabs-slider>
         </v-tabs>
       </v-card-title>
@@ -13,20 +13,24 @@
         <v-tabs-items v-model="tab">
           <v-tab-item :key="1">
             <v-form @submit.prevent="login">
-              <v-text-field v-model="loginForm.username" label="Nazwa użytkownika"></v-text-field>
-              <v-text-field v-model="loginForm.password" label="Hasło" type="password"></v-text-field>
-              <v-btn type="submit" color="primary">Zaloguj się</v-btn>
+              <v-text-field v-model="loginForm.username" label="User name"></v-text-field>
+              <v-text-field v-model="loginForm.password" label="Password" type="password"></v-text-field>
+              <v-footer class="justify-end white">
+                <v-btn type="submit" color="primary">Log in</v-btn>
+              </v-footer>
             </v-form>
           </v-tab-item>
 
           <v-tab-item :key="2">
             <v-form @submit.prevent="register">
-              <v-text-field v-model="registerForm.username" label="Nazwa użytkownika"></v-text-field>
+              <v-text-field v-model="registerForm.username" label="User Name"></v-text-field>
               <v-text-field v-model="registerForm.email" label="Email"></v-text-field>
-              <v-text-field v-model="registerForm.password" label="Hasło" type="password"></v-text-field>
-              <v-text-field v-model="registerForm.passwordConfirmation" label="Potwierdź hasło"
+              <v-text-field v-model="registerForm.password" label="Password" type="password"></v-text-field>
+              <v-text-field v-model="registerForm.passwordConfirmation" label="Confirm password"
                             type="password"></v-text-field>
-              <v-btn type="submit" color="primary">Zarejestruj się</v-btn>
+              <v-footer class="justify-end white">
+                <v-btn type="submit" color="primary">Register</v-btn>
+              </v-footer>
             </v-form>
           </v-tab-item>
         </v-tabs-items>
@@ -41,6 +45,7 @@
 
 <script>
 import {login, register} from "../api/api";
+import router from "@/router";
 
 export default {
   data() {
@@ -67,17 +72,20 @@ export default {
       login({
         username: this.loginForm.username,
         password: this.loginForm.password
-      }).then(() => {
-            this.snackbarText = 'Zalogowano pomyślnie!';
-            this.showSnackbar();
+      }).then((res) => {
+            localStorage.setItem('token', res.data.token);
+            this.$store.commit('setToken', {token: res.data.token})
+            router.push('/companies')
             this.dialog = false;
+            this.loginForm.username = ''
+            this.loginForm.password = ''
           }
       )
 
     },
     register() {
       if (this.registerForm.password !== this.registerForm.passwordConfirmation) {
-        this.snackbarText = 'Hasło i potwierdzenie hasła muszą być identyczne.';
+        this.snackbarText = 'The password and password confirmation must be identical.';
         this.snackbarColor = 'error';
         this.showSnackbar();
         return;
@@ -87,9 +95,10 @@ export default {
         login: this.registerForm.username,
         password: this.registerForm.password,
       }).then(() => {
-        this.snackbarText = 'Zarejestrowano pomyślnie!';
-        this.showSnackbar();
         this.dialog = false;
+        this.registerForm.email = ''
+        this.registerForm.username = ''
+        this.registerForm.password = ''
       })
     },
     showSnackbar() {
