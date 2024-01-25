@@ -80,7 +80,11 @@ export default {
             this.loginForm.username = ''
             this.loginForm.password = ''
           }
-      )
+      ).catch(() => {
+        this.snackbarText = 'incorrect username or password';
+        this.snackbarColor = 'error';
+        this.showSnackbar();
+      })
 
     },
     register() {
@@ -95,11 +99,18 @@ export default {
         login: this.registerForm.username,
         password: this.registerForm.password,
       }).then(() => {
-        this.dialog = false;
         this.registerForm.email = ''
         this.registerForm.username = ''
         this.registerForm.password = ''
+        this.registerForm.passwordConfirmation = ''
+        this.snackbarText = 'Register success'
+        this.snackbarColor = 'success'
+        this.tab = 0;
+      }).catch(() => {
+        this.snackbarText = 'Provided data is incorrect';
+        this.snackbarColor = 'error';
       })
+      this.showSnackbar();
     },
     showSnackbar() {
       this.snackbar = true;
